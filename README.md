@@ -34,4 +34,4 @@ A Python script that checks the strength of provided passwords and identifies po
 ## Acknowledgments
 
 - The script uses the "Have I Been Pwned" API to check for breached passwords.
-- The common passwords are taken from (Seclists)[https://github.com/danielmiessler/SecLists/].
+- The common passwords are taken from [Seclists](https://github.com/danielmiessler/SecLists/).
