@@ -366,7 +366,7 @@ def check_calendar_year(password):
     match = year_pattern.search(password)
     if match:
         year = int(match.group())
-        if 1800 <= year <= 2099:
+        if 1700 <= year <= 2099:
             return year
     return None
 
