@@ -9,7 +9,6 @@ import concurrent.futures
 import threading
 
 
-COMMON_PASSWORDS_FILE = "common_passwords.txt"
 KEYBOARD_PATTERNS_FILE = "keyboard_patterns.txt"
 COMMON_WORDS_FILE = "common_words.txt"
 
@@ -94,7 +93,6 @@ def load_data_from_file(file_path):
         sys.exit(1)
 
 
-common_passwords_data = load_data_from_file(COMMON_PASSWORDS_FILE)
 keyboard_patterns_data = load_data_from_file(KEYBOARD_PATTERNS_FILE)
 common_words_data = load_data_from_file(COMMON_WORDS_FILE)
 
@@ -232,12 +230,6 @@ def check_nist_compliant(password):
     return nist_compliance_failure, nist_compliance_recommendation
 
 
-def check_common_password(password):
-    return password.lower() in (
-        common_password.lower() for common_password in common_passwords_data
-    )
-
-
 def check_common_words(password):
     matching_words = []
 
@@ -356,8 +348,6 @@ def check_leet_speak(password):
         password = password.replace(leet_char, real_char)
     if password in common_words_data:
         return True
-    if password in common_passwords_data:
-        return True
     return False
 
 
@@ -406,7 +396,6 @@ def process_password(password, show_recommendations):
     nist_compliance_failure, nist_compliance_recommendation = check_nist_compliant(
         password
     )
-    is_common_password = check_common_password(password)
     has_common_word = check_common_words(password)
     if custom_words_data:
         has_custom_word = check_custom_wordlist(password)
@@ -454,14 +443,6 @@ def process_password(password, show_recommendations):
             password_score += 1
 
         if not nist_compliance_failure:
-            password_score += 1
-
-        if is_common_password:
-            password_score -= 4
-            print(f"{Fore.YELLOW}[-] Found in common password list{Style.RESET_ALL}")
-            recommendations.append("Avoid using common passwords")
-
-        if not is_common_password:
             password_score += 1
 
         if has_common_word:
@@ -512,10 +493,10 @@ def process_password(password, show_recommendations):
         if has_leet_speak:
             password_score -= 1
             print(
-                f"{Fore.YELLOW}[-] Uses l33t speak substitutions of common words or passwords{Style.RESET_ALL}"
+                f"{Fore.YELLOW}[-] Uses l33t speak substitutions of common words{Style.RESET_ALL}"
             )
             recommendations.append(
-                "Avoid using l33t speak substitution of common words or passwords"
+                "Avoid using l33t speak substitution of common words"
             )
 
         if not has_leet_speak:
@@ -539,7 +520,6 @@ def process_password(password, show_recommendations):
             [
                 in_breachlist,
                 nzism_compliance_failure,
-                is_common_password,
                 has_common_word,
                 has_custom_word,
                 has_keyboard_patterns,
